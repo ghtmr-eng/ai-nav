@@ -62,14 +62,28 @@ tailwind.config = {
   .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 
-  /* 文章模态框 */
-  .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 16px}
-  .modal-overlay.open{display:flex}
-  .modal-body{animation:fadeInUp .35s ease}
-
-  /* 提交模态框 */
-  .submit-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+  /* 提交工具弹窗 */
+  .submit-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
   .submit-overlay.open{display:flex}
+  .submit-box{background:#141414;border:1px solid #222;border-radius:16px;padding:32px;width:90%;max-width:480px;position:relative;max-height:90vh;overflow-y:auto}
+  .submit-box h3{font-size:20px;margin-bottom:4px;color:#fff}
+  .submit-box .sub{font-size:13px;color:#666;margin-bottom:20px}
+  .submit-box label{display:block;font-size:12px;color:#888;margin-bottom:5px;margin-top:14px}
+  .submit-box input,.submit-box select,.submit-box textarea{width:100%;background:#0d0d0d;border:1px solid #222;border-radius:8px;padding:10px 14px;color:#e0e0e0;font-size:14px;outline:none;font-family:inherit;transition:border .2s}
+  .submit-box input:focus,.submit-box select:focus,.submit-box textarea:focus{border-color:#0ea5e9}
+  .submit-box textarea{resize:vertical;min-height:70px}
+  .submit-box .btn-row{display:flex;gap:10px;margin-top:20px}
+  .submit-box .btn-submit{flex:1;padding:11px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;background:#0ea5e9;color:#fff;transition:opacity .2s}
+  .submit-box .btn-submit:hover{opacity:.85}
+  .submit-box .btn-submit:disabled{opacity:.5;cursor:not-allowed}
+  .submit-box .btn-cancel{padding:11px 20px;border-radius:8px;font-size:14px;border:1px solid #333;background:transparent;color:#888;cursor:pointer}
+  .submit-box .btn-cancel:hover{border-color:#555;color:#ccc}
+  .submit-box .close-x{position:absolute;top:14px;right:18px;background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1}
+  .submit-box .close-x:hover{color:#fff}
+  .submit-box .success-msg{display:none;text-align:center;padding:24px 0}
+  .submit-box .success-msg .icon{font-size:48px;margin-bottom:12px}
+  .submit-box .success-msg p{color:#888;font-size:14px;line-height:1.6}
+  .modal-body{animation:fadeInUp .35s ease}
 
   /* Toast */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);z-index:200;padding:12px 24px;border-radius:12px;background:#171717;border:1px solid rgba(14,165,233,.3);color:#38bdf8;font-size:13px;font-weight:500;opacity:0;transition:all .4s;pointer-events:none}
@@ -131,6 +145,48 @@ tailwind.config = {
     <h3 class="text-xl font-semibold mb-2">💡 提交工具</h3>
     <p class="text-neutral-500 text-sm mb-5">发现了好用的AI工具？告诉我们，审核通过后加入导航站</p>
     <button onclick="showSubmit()" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 rounded-lg text-sm font-medium transition-colors">提交工具</button>
+  </div>
+</div>
+
+<!-- 提交工具弹窗 -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="submit-box modal-body" id="submitFormBox">
+    <button class="close-x" onclick="closeSubmit()">&times;</button>
+    <h3>📩 推荐AI工具</h3>
+    <p class="sub">发现好工具？填下表，审核通过后加入导航站</p>
+    <form id="submitForm">
+      <label>工具名称 *</label>
+      <input type="text" name="工具名称" required placeholder="如：ChatGPT">
+      <label>官网链接 *</label>
+      <input type="url" name="官网链接" required placeholder="https://...">
+      <label>一句话描述 *</label>
+      <input type="text" name="工具描述" required placeholder="OpenAI旗舰对话模型，支持多轮对话与代码生成" maxlength="80">
+      <label>分类</label>
+      <select name="分类">
+        <option value="chat">对话聊天</option>
+        <option value="image">AI绘画</option>
+        <option value="video">AI视频</option>
+        <option value="code">AI编程</option>
+        <option value="writing">AI写作</option>
+        <option value="music">AI音乐</option>
+        <option value="search">AI搜索</option>
+        <option value="office">办公效率</option>
+      </select>
+      <label>推荐理由（选填）</label>
+      <textarea name="推荐理由" placeholder="说说你为什么推荐这个工具..." maxlength="300"></textarea>
+      <div class="btn-row">
+        <button type="button" class="btn-cancel" onclick="closeSubmit()">取消</button>
+        <button type="submit" class="btn-submit" id="submitBtn">提交推荐</button>
+      </div>
+    </form>
+  </div>
+  <div class="submit-box modal-body" id="submitSuccess" style="display:none">
+    <div class="success-msg">
+      <div class="icon">✅</div>
+      <h3 style="color:#fff;margin-bottom:8px">收到！</h3>
+      <p>感谢推荐，审核通过后会加入导航站。<br>一般 48 小时内处理。</p>
+      <button class="btn-submit" style="margin-top:16px;padding:10px 24px;width:auto" onclick="closeSubmit()">关闭</button>
+    </div>
   </div>
 </div>
 
@@ -301,10 +357,26 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 // 实际收录数
 document.getElementById('headerToolCount').textContent = tools.length;
 
-// 提交工具 (placeholder)
+// 提交工具表单
 function showSubmit() {
-  alert('提交工具功能即将上线！请先通过邮件联系我们。');
+  document.getElementById('submitOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('submitForm').reset();
+  document.getElementById('submitFormBox').style.display = 'block';
+  document.getElementById('submitSuccess').style.display = 'none';
 }
+function closeSubmit() {
+  document.getElementById('submitOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('submitForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  document.getElementById('submitFormBox').style.display = 'none';
+  document.getElementById('submitSuccess').style.display = 'block';
+});
+document.getElementById('submitOverlay').addEventListener('click', function(e) {
+  if(e.target === this) closeSubmit();
+});
 </script>
 </body>
 </html>
