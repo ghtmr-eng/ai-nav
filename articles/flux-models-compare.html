@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flux模型全系列对比：Pro/Dev/Schnell/FP8怎么选 - AI工具导航站</title>
+<meta name="description" content="Black Forest Labs的Flux模型有Pro、Dev、Schnell、FP8四个版本，本文从画质、速度、价格、硬件要求四个维度实测对比。">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.8}
+  .container{max-width:800px;margin:0 auto;padding:40px 20px}
+  .back{display:inline-flex;align-items:center;gap:6px;color:#38bdf8;text-decoration:none;font-size:14px;margin-bottom:30px}
+  .back:hover{text-decoration:underline}
+  .meta{color:#666;font-size:13px;margin:10px 0 30px;border-bottom:1px solid #1f1f1f;padding-bottom:20px}
+  .meta span{margin-right:20px}
+  h1{color:#fff;font-size:28px;margin-bottom:10px;line-height:1.4}
+  h2{color:#fff;font-size:20px;margin:35px 0 15px;padding-bottom:8px;border-bottom:1px solid #1f1f1f}
+  h3{color:#e0e0e0;font-size:17px;margin:25px 0 10px}
+  p{margin-bottom:16px;font-size:16px}
+  ul,ol{margin:10px 0 20px 24px}
+  li{margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+  th{background:#1a1a1a;color:#38bdf8;text-align:left;padding:10px 14px;border:1px solid #222}
+  td{padding:10px 14px;border:1px solid #222}
+  tr:nth-child(even) td{background:#0d0d0d}
+  pre{background:#111;border:1px solid #222;border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0;font-size:14px;line-height:1.6}
+  code{font-family:'Fira Code','Cascadia Code',monospace;color:#a5d6ff}
+  strong{color:#fff}
+  .footer{margin-top:60px;padding-top:20px;border-top:1px solid #1f1f1f;text-align:center;color:#555;font-size:13px}
+  .footer a{color:#38bdf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">← 返回导航站</a>
+  <h1>Flux模型全系列对比：Pro/Dev/Schnell/FP8怎么选</h1>
+  <div class="meta">
+    <span>📅 2026-06-10</span>
+    <span>🏷️ AI绘画</span>
+    
+  </div>
+  <h2>Flux模型家族：12B参数的多模态扩散模型</h2>
+<p>Flux由Black Forest Labs于2024年8月推出，基于120亿参数。在发布初期，其文字渲染和手指细节超越了SD3和Midjourney V6。</p>
+
+<h2>4个版本详细对比</h2>
+<table>
+  <tr><th>版本</th><th>定位</th><th>硬件要求</th><th>速度</th><th>价格</th></tr>
+  <tr><td>Flux Pro</td><td>最高画质</td><td>云端API</td><td>中</td><td>~$0.05/张</td></tr>
+  <tr><td>Flux Dev</td><td>平衡型</td><td>12GB+显存</td><td>慢（10-30秒）</td><td>免费本地</td></tr>
+  <tr><td>Flux Schnell</td><td>速度优先</td><td>12GB或更低</td><td>极快（<1秒）</td><td>~$0.02/张</td></tr>
+  <tr><td>Flux FP8</td><td>低配优化</td><td>8GB显存</td><td>中</td><td>免费本地</td></tr>
+</table>
+
+<h2>Flux Pro</h2>
+<p>仅通过API使用。优势：文字渲染最准、手指细节最好、支持4K。约$0.05/张（通过BFL API或Replicate等第三方平台）。适合商用。</p>
+
+<h2>Flux Dev</h2>
+<p>开源权重可下载（非商用）。需要12GB+显存（RTX 3060 12GB勉强，RTX 4070+更好），32GB系统内存。1024×1024单张约10-30秒。</p>
+
+<h2>Flux Schnell</h2>
+<p>蒸馏版，仅需1-4步完成生成。12GB显卡上单张<strong>不到1秒</strong>。画质略低于Pro/Dev，但极适合快速迭代：先跑10张Schnell看构图，再用Pro精修。</p>
+
+<h2>Flux FP8</h2>
+<p>量化版，将Dev的显存需求从12GB降至约8GB（RTX 2060/3060 8GB可运行）。画质轻微损失，但让更多用户本地体验Flux。</p>
+
+<h2>选型建议</h2>
+<ul>
+  <li><strong>商用+顶级画质 → Flux Pro API</strong></li>
+  <li><strong>12GB以上显卡 → Flux Dev（免费本地）</strong></li>
+  <li><strong>8GB显卡 → Flux FP8</strong></li>
+  <li><strong>快速迭代 → Flux Schnell</strong></li>
+  <li><strong>混合策略（推荐） → Schnell出草稿 + Pro出成品</strong></li>
+</ul>
+  <div class="footer">
+    <p>本文由 AI工具导航站 发布 · <a href="../index.html">浏览更多AI工具</a></p>
+  </div>
+</div>
+</body>
+</html>

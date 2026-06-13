@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek R1本地部署教程：不同显存配置方案与实测性能数据 - AI工具导航站</title>
+<meta name="description" content="想在本地运行DeepSeek R1？本文基于社区实测数据，给出从6GB到48GB显存的详细配置方案。">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.8}
+  .container{max-width:800px;margin:0 auto;padding:40px 20px}
+  .back{display:inline-flex;align-items:center;gap:6px;color:#38bdf8;text-decoration:none;font-size:14px;margin-bottom:30px}
+  .back:hover{text-decoration:underline}
+  .meta{color:#666;font-size:13px;margin:10px 0 30px;border-bottom:1px solid #1f1f1f;padding-bottom:20px}
+  .meta span{margin-right:20px}
+  h1{color:#fff;font-size:28px;margin-bottom:10px;line-height:1.4}
+  h2{color:#fff;font-size:20px;margin:35px 0 15px;padding-bottom:8px;border-bottom:1px solid #1f1f1f}
+  h3{color:#e0e0e0;font-size:17px;margin:25px 0 10px}
+  p{margin-bottom:16px;font-size:16px}
+  ul,ol{margin:10px 0 20px 24px}
+  li{margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+  th{background:#1a1a1a;color:#38bdf8;text-align:left;padding:10px 14px;border:1px solid #222}
+  td{padding:10px 14px;border:1px solid #222}
+  tr:nth-child(even) td{background:#0d0d0d}
+  pre{background:#111;border:1px solid #222;border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0;font-size:14px;line-height:1.6}
+  code{font-family:'Fira Code','Cascadia Code',monospace;color:#a5d6ff}
+  strong{color:#fff}
+  .footer{margin-top:60px;padding-top:20px;border-top:1px solid #1f1f1f;text-align:center;color:#555;font-size:13px}
+  .footer a{color:#38bdf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">← 返回导航站</a>
+  <h1>DeepSeek R1本地部署教程：不同显存配置方案与实测性能数据</h1>
+  <div class="meta">
+    <span>📅 2026-06-12</span>
+    <span>🏷️ 对话聊天</span>
+    
+  </div>
+  <h2>为什么要在本地部署DeepSeek R1</h2>
+<p>DeepSeek R1是深度求索推出的开源推理模型。本地部署的好处：<strong>数据隐私完全可控、无API费用、无网络延迟</strong>。缺点是需要一块不错的显卡。</p>
+
+<h2>硬件要求速查表</h2>
+<table>
+  <tr><th>模型大小</th><th>最低显存</th><th>推荐显存</th><th>系统内存</th></tr>
+  <tr><td>7B</td><td>6 GB</td><td>8 GB</td><td>16 GB</td></tr>
+  <tr><td>14B</td><td>12 GB</td><td>16 GB</td><td>32 GB</td></tr>
+  <tr><td>32B</td><td>24 GB</td><td>24 GB+</td><td>64 GB</td></tr>
+  <tr><td>70B</td><td>48 GB</td><td>80 GB</td><td>128 GB</td></tr>
+  <tr><td>671B</td><td>—</td><td>多卡集群</td><td>512 GB+</td></tr>
+</table>
+<p>以上数据综合自开发者社区实测反馈（Facebook Developer Kaki等）。7B模型在RTX 3060上运行流畅，14B在RTX 3060上可运行但token速度下降。</p>
+
+<h2>方案一：8GB显存——用Ollama跑7B</h2>
+<p>使用Ollama是最简单的方案（支持Windows/Mac/Linux）：</p>
+<pre><code># 下载：https://ollama.com
+ollama run deepseek-r1:7b</code></pre>
+<p>7B量化版在8GB显卡上实际占用约5.5GB显存，生成速度约<strong>15-25 token/秒</strong>，日常对话完全够用。</p>
+
+<h2>方案二：12GB显存——跑14B模型</h2>
+<p>RTX 3060 12GB性价比极高（二手约1500元）：</p>
+<pre><code>ollama run deepseek-r1:14b</code></pre>
+<p>14B实际占用约10GB显存，速度约<strong>8-15 token/秒</strong>。</p>
+
+<h2>方案三：24GB显存——跑32B模型</h2>
+<p>RTX 3090或4090是最佳选择：</p>
+<pre><code>ollama run deepseek-r1:32b</code></pre>
+<p>32B模型推理能力显著强于14B，在数学证明、代码生成上接近70B。速度约<strong>20-30 token/秒</strong>。</p>
+
+<h2>方案四：48GB显存——跑70B</h2>
+<p>需要A6000/L40S等专业卡或双卡。社区反馈70B在48GB显存上运行<strong>仍然偏慢</strong>。如果追求推理质量，优先考虑云端API。</p>
+
+<h2>常见问题</h2>
+<p><strong>CPU-only可以跑吗？</strong>可以，但7B约1-2 token/秒，仅适合测试。</p>
+<p><strong>Mac能跑吗？</strong>可以。M2 Ultra 192GB可跑70B，M3 Max 128GB可跑32B。Ollama原生支持Apple Silicon。</p>
+  <div class="footer">
+    <p>本文由 AI工具导航站 发布 · <a href="../index.html">浏览更多AI工具</a></p>
+  </div>
+</div>
+</body>
+</html>

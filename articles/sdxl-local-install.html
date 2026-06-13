@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Stable Diffusion XL本地安装教程：6GB显卡从零部署全流程 - AI工具导航站</title><meta name="description" content="想在自己电脑上跑AI绘画？本教程手把手教你安装SDXL，从Python环境到WebUI，6GB显存也能流畅出图。"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.8}.container{max-width:800px;margin:0 auto;padding:40px 20px}.back{display:inline-flex;align-items:center;gap:6px;color:#38bdf8;text-decoration:none;font-size:14px;margin-bottom:30px}.meta{color:#666;font-size:13px;margin:10px 0 30px;border-bottom:1px solid #1f1f1f;padding-bottom:20px}.meta span{margin-right:20px}h1{color:#fff;font-size:28px;margin-bottom:10px;line-height:1.4}h2{color:#fff;font-size:20px;margin:35px 0 15px;padding-bottom:8px;border-bottom:1px solid #1f1f1f}h3{color:#e0e0e0;font-size:17px;margin:25px 0 10px}p{margin-bottom:16px;font-size:16px}ul,ol{margin:10px 0 20px 24px}li{margin-bottom:8px}table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}th{background:#1a1a1a;color:#38bdf8;text-align:left;padding:10px 14px;border:1px solid #222}td{padding:10px 14px;border:1px solid #222}tr:nth-child(even) td{background:#0d0d0d}pre{background:#111;border:1px solid #222;border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0;font-size:14px;line-height:1.6}code{font-family:'Fira Code',monospace;color:#a5d6ff}strong{color:#fff}.footer{margin-top:60px;padding-top:20px;border-top:1px solid #1f1f1f;text-align:center;color:#555;font-size:13px}.footer a{color:#38bdf8;text-decoration:none}</style></head><body><div class="container"><a href="../index.html" class="back">← 返回导航站</a><h1>Stable Diffusion XL本地安装教程：6GB显卡从零部署全流程</h1><div class="meta"><span>📅 2026-05-27</span><span>🏷️ AI绘画</span></div><h2>SDXL硬件要求</h2>
+<table>
+  <tr><th>配置</th><th>最低</th><th>推荐</th><th>理想</th></tr>
+  <tr><td>显存</td><td>4 GB</td><td>8-12 GB</td><td>16 GB+</td></tr>
+  <tr><td>系统内存</td><td>16 GB</td><td>32 GB</td><td>64 GB</td></tr>
+  <tr><td>存储</td><td>20 GB</td><td>50 GB SSD</td><td>100 GB+ SSD</td></tr>
+</table>
+<p>4GB显存勉强可运行（需--medvram参数），6GB OK，12GB体验最佳（1024×1024约20秒/张）。</p>
+
+<h2>安装步骤（Windows）</h2>
+<h3>1. 安装Python 3.10</h3>
+<p>从python.org下载Python 3.10.11（<strong>不要用3.11+</strong>，部分依赖不兼容）。安装时勾选"Add to PATH"。</p>
+<h3>2. 安装Git</h3>
+<p>从git-scm.com下载安装。</p>
+<h3>3. 下载Automatic1111 WebUI</h3>
+<pre><code>git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+cd stable-diffusion-webui</code></pre>
+<h3>4. 下载SDXL模型</h3>
+<p>从Hugging Face或Civitai下载sd_xl_base_1.0.safetensors，放入models/Stable-diffusion/目录。</p>
+<h3>5. 首次启动</h3>
+<pre><code>webui-user.bat</code></pre>
+<p>首次启动会自动安装依赖（约10-20分钟）。之后浏览器打开 http://127.0.0.1:7860。</p>
+
+<h2>低显存优化</h2>
+<p>编辑webui-user.bat加入启动参数：</p>
+<pre><code>set COMMANDLINE_ARGS=--medvram --opt-sdp-attention</code></pre>
+<p>--medvram将模型分块加载，降低显存占用。6GB显卡加此参数可流畅运行SDXL。</p>
+
+<h2>Fooocus——更简单的选择</h2>
+<p>如果觉得WebUI太复杂，试试Fooocus——专为SDXL设计的简化界面，安装更简单，默认效果更好。从GitHub下载即可。</p><div class="footer"><p>本文由 AI工具导航站 发布 · <a href="../index.html">浏览更多AI工具</a></p></div></div></body></html>

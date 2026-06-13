@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midjourney V6.1完整指南：参数详解与实战出图技巧 - AI工具导航站</title>
+<meta name="description" content="从基础参数到高级功能，系统梳理Midjourney V6.1的核心参数（--ar、--stylize、--chaos等），附实战提示词公式。">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.8}
+  .container{max-width:800px;margin:0 auto;padding:40px 20px}
+  .back{display:inline-flex;align-items:center;gap:6px;color:#38bdf8;text-decoration:none;font-size:14px;margin-bottom:30px}
+  .back:hover{text-decoration:underline}
+  .meta{color:#666;font-size:13px;margin:10px 0 30px;border-bottom:1px solid #1f1f1f;padding-bottom:20px}
+  .meta span{margin-right:20px}
+  h1{color:#fff;font-size:28px;margin-bottom:10px;line-height:1.4}
+  h2{color:#fff;font-size:20px;margin:35px 0 15px;padding-bottom:8px;border-bottom:1px solid #1f1f1f}
+  h3{color:#e0e0e0;font-size:17px;margin:25px 0 10px}
+  p{margin-bottom:16px;font-size:16px}
+  ul,ol{margin:10px 0 20px 24px}
+  li{margin-bottom:8px}
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+  th{background:#1a1a1a;color:#38bdf8;text-align:left;padding:10px 14px;border:1px solid #222}
+  td{padding:10px 14px;border:1px solid #222}
+  tr:nth-child(even) td{background:#0d0d0d}
+  pre{background:#111;border:1px solid #222;border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0;font-size:14px;line-height:1.6}
+  code{font-family:'Fira Code','Cascadia Code',monospace;color:#a5d6ff}
+  strong{color:#fff}
+  .footer{margin-top:60px;padding-top:20px;border-top:1px solid #1f1f1f;text-align:center;color:#555;font-size:13px}
+  .footer a{color:#38bdf8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back">← 返回导航站</a>
+  <h1>Midjourney V6.1完整指南：参数详解与实战出图技巧</h1>
+  <div class="meta">
+    <span>📅 2026-06-11</span>
+    <span>🏷️ AI绘画</span>
+    
+  </div>
+  <h2>Midjourney定价：4个档位怎么选</h2>
+<table>
+  <tr><th>方案</th><th>月费</th><th>快速GPU时间</th></tr>
+  <tr><td>Basic</td><td>$10</td><td>3.3小时</td></tr>
+  <tr><td>Standard</td><td>$30</td><td>15小时（无限Relax）</td></tr>
+  <tr><td>Pro</td><td>$60</td><td>30小时（Stealth模式）</td></tr>
+  <tr><td>Mega</td><td>$120</td><td>60小时</td></tr>
+</table>
+<p>年付约省20%。对个人创作者，$30/月的Standard是主流选择。</p>
+
+<h2>核心参数详解</h2>
+<h3>--ar（宽高比）</h3>
+<p>V6.1支持最大14:1的极端比例：</p>
+<pre><code>--ar 16:9  # 横屏桌面壁纸
+--ar 9:16  # 竖屏手机壁纸
+--ar 1:1   # 正方形（默认）</code></pre>
+
+<h3>--stylize / --s（风格化程度）</h3>
+<p>值域0-1000，默认100。越高越艺术化，越低越忠实提示词：</p>
+<pre><code>--s 0    # 写实
+--s 250  # 适度艺术化
+--s 1000 # 最大风格化</code></pre>
+
+<h3>--chaos / --c（多样性）</h3>
+<p>值域0-100。控制4张图差异程度。0=风格接近，100=差异巨大。</p>
+
+<h3>其他重要参数</h3>
+<ul>
+  <li><strong>--iw</strong>（图片权重）：0-3，控制参考图影响力</li>
+  <li><strong>--seed</strong>：固定随机种子，复现同一风格</li>
+  <li><strong>--no</strong>：排除元素，如 --no people, text</li>
+  <li><strong>--tile</strong>：生成无缝图案</li>
+  <li><strong>--weird</strong>：0-3000，引入超现实元素</li>
+</ul>
+
+<h2>高级功能</h2>
+<h3>--sref（风格参考）</h3>
+<pre><code>/imagine prompt:a city at night --sref [图片URL] --sw 800</code></pre>
+<h3>--cref（角色参考）</h3>
+<p>上传角色图保持同一形象。--cw控制一致性强度（0-100）。</p>
+
+<h2>提示词公式</h2>
+<p>最有效结构：<strong>主体 + 场景 + 风格 + 光线 + 参数</strong></p>
+<pre><code>a young woman in a cyberpunk market, neon lights,
+cinematic lighting, photorealistic, 8k,
+--ar 16:9 --s 250 --v 6.1</code></pre>
+  <div class="footer">
+    <p>本文由 AI工具导航站 发布 · <a href="../index.html">浏览更多AI工具</a></p>
+  </div>
+</div>
+</body>
+</html>

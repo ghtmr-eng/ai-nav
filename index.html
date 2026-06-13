@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI工具导航站 - 发现最好的AI工具</title>
+<meta name="description" content="精选优质AI工具导航，涵盖聊天、绘画、视频、编程、写作、音乐、搜索、办公等8大分类，助你提升效率">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'sans-serif'] },
+      colors: {
+        dark: { 50:'#0a0a0a',100:'#111111',200:'#171717',300:'#1f1f1f',400:'#2a2a2a',500:'#333333' },
+        accent: { 400:'#38bdf8',500:'#0ea5e9',600:'#0284c7' },
+      }
+    }
+  }
+}
+</script>
+<style>
+  ::-webkit-scrollbar{width:5px}
+  ::-webkit-scrollbar-track{background:#111}
+  ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:#404040}
+  ::selection{background:#0ea5e9;color:#fff}
+  body{font-family:'Inter',sans-serif}
+
+  .grid-bg{
+    background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:64px 64px;
+  }
+  .top-glow{position:fixed;top:-220px;left:50%;transform:translateX(-50%);width:900px;height:440px;background:radial-gradient(ellipse,rgba(14,165,233,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+  .search-glow:focus-within{box-shadow:0 0 0 1px rgba(14,165,233,.35),0 0 24px rgba(14,165,233,.07)}
+
+  .tag-btn{transition:all .2s}
+  .tag-btn.active{background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.45);color:#38bdf8}
+  .tags-scroll{scrollbar-width:none;-ms-overflow-style:none}
+  .tags-scroll::-webkit-scrollbar{display:none}
+
+  .tool-card{transition:transform .3s,box-shadow .3s,border-color .3s}
+  .tool-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -12px rgba(0,0,0,.5);border-color:rgba(14,165,233,.25)}
+  .tool-card:hover .card-icon{background:rgba(14,165,233,.1);border-color:rgba(14,165,233,.3)}
+  .tool-card:hover .card-arrow{opacity:1;transform:translate(0,-1px)}
+  .card-arrow{opacity:0;transform:translate(-6px,4px);transition:all .3s}
+
+  .article-card{transition:transform .3s,box-shadow .3s,border-color .3s}
+  .article-card:hover{transform:translateY(-3px);box-shadow:0 16px 32px -8px rgba(0,0,0,.4);border-color:rgba(14,165,233,.2)}
+  .article-card:hover .art-arrow{opacity:1;transform:translateX(0)}
+  .art-arrow{opacity:0;transform:translateX(-6px);transition:all .3s}
+
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeInUp .45s ease forwards}
+  @keyframes pulse-soft{0%,100%{opacity:.3}50%{opacity:.55}}
+  .pulse-soft{animation:pulse-soft 2s ease-in-out infinite}
+  @keyframes countUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .count-in{animation:countUp .6s ease forwards}
+
+  .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* 文章模态框 */
+  .modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 16px}
+  .modal-overlay.open{display:flex}
+  .modal-body{animation:fadeInUp .35s ease}
+
+  /* 提交模态框 */
+  .submit-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+  .submit-overlay.open{display:flex}
+
+  /* Toast */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);z-index:200;padding:12px 24px;border-radius:12px;background:#171717;border:1px solid rgba(14,165,233,.3);color:#38bdf8;font-size:13px;font-weight:500;opacity:0;transition:all .4s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body class="bg-dark-50 text-white min-h-screen">
+<div class="top-glow"></div>
+<header class="relative z-10 max-w-7xl mx-auto px-4 py-20 text-center">
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent-500/20 bg-accent-500/5 text-accent-400 text-xs font-medium mb-6">
+    ✨ 精选优质AI工具，每日更新
+  </div>
+  <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">AI工具<span class="text-accent-400">导航站</span></h1>
+  <p class="text-neutral-400 text-lg max-w-xl mx-auto">涵盖聊天、绘画、视频、编程、写作等8大分类，帮你找到最适合的AI工具</p>
+  <div class="mt-6 text-xs text-neutral-600">已收录 <span class="text-neutral-400 font-semibold" id="headerToolCount">0</span> 个AI工具 · 纯人工筛选</div>
+</header>
+
+<div class="relative z-10 max-w-xl mx-auto px-4 -mt-8 mb-10">
+  <div class="search-glow relative rounded-xl border border-neutral-800 bg-dark-200/80 backdrop-blur-sm transition-all">
+    <input id="searchInput" type="text" placeholder="搜索工具名称、描述..."
+      class="w-full bg-transparent px-5 py-3.5 text-sm text-white placeholder-neutral-500 outline-none">
+  </div>
+</div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-4 mb-10">
+  <div id="tagsContainer" class="tags-scroll flex items-center gap-2 overflow-x-auto pb-2"></div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 mb-8">
+  <div class="rounded-xl border border-dashed border-neutral-700/60 bg-dark-200/30 flex items-center justify-center h-20 text-neutral-600 text-sm gap-2">
+    <span class="text-base">📢</span> 广告位 — 流量增长中，欢迎合作
+  </div>
+</div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-4 mb-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold">🔧 全部工具</h2>
+    <span id="toolCount" class="text-xs text-neutral-500"></span>
+  </div>
+  <div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 mb-12">
+  <div class="rounded-xl border border-dashed border-neutral-700/60 bg-dark-200/30 flex items-center justify-center h-16 text-neutral-600 text-sm gap-2">
+    <span class="text-base">📢</span> 广告位 — 咨询合作
+  </div>
+</div>
+
+<div class="relative z-10 max-w-7xl mx-auto px-4 mb-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-lg font-semibold">📰 AI精选文章</h2>
+    <span class="text-xs text-neutral-500">SEO流量入口 · 定期更新</span>
+  </div>
+  <div id="articlesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+</div>
+
+<div class="relative z-10 max-w-2xl mx-auto px-4 mb-16">
+  <div class="rounded-2xl border border-neutral-800/60 bg-dark-200/40 p-8 text-center">
+    <h3 class="text-xl font-semibold mb-2">💡 提交工具</h3>
+    <p class="text-neutral-500 text-sm mb-5">发现了好用的AI工具？告诉我们，审核通过后加入导航站</p>
+    <button onclick="showSubmit()" class="px-6 py-2.5 bg-accent-500 hover:bg-accent-600 rounded-lg text-sm font-medium transition-colors">提交工具</button>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 mb-8">
+  <div class="rounded-xl border border-dashed border-neutral-700/60 bg-dark-200/30 flex items-center justify-center h-14 text-neutral-600 text-sm gap-2">
+    <span class="text-base">📢</span> 底部广告位 — 日访问量达标后可接入 Google AdSense
+  </div>
+</div>
+
+<footer class="border-t border-neutral-800/50 py-8 text-center">
+  <p class="text-xs text-neutral-600">AI工具导航站 © 2026 | 精选收录 <span id="footerCount">0</span> 个AI工具 | 每日更新</p>
+</footer>
+
+<script>
+const tools = [
+  { name:'ChatGPT',         desc:'OpenAI 旗舰对话模型，支持多轮对话、代码生成与文件分析',        url:'https://chat.openai.com',      tags:['对话','GPT','OpenAI'],   category:'chat',   icon:'simple-icons:openai' },
+  { name:'Claude',          desc:'Anthropic 出品长上下文对话模型，擅长深度分析与长文档处理',      url:'https://claude.ai',            tags:['对话','Claude','长文本'], category:'chat',   icon:'simple-icons:anthropic' },
+  { name:'Gemini',          desc:'Google 多模态大模型，原生支持文本、图像、代码等多种输入输出',    url:'https://gemini.google.com',    tags:['对话','Google','多模态'], category:'chat',   icon:'simple-icons:google' },
+  { name:'DeepSeek',        desc:'国产开源大模型，推理能力强，代码与数学表现突出',                url:'https://chat.deepseek.com',    tags:['对话','国产','开源'],     category:'chat',   icon:'lucide:brain' },
+  { name:'Midjourney',      desc:'顶级 AI 绘画工具，以艺术风格和画面质量著称',                   url:'https://midjourney.com',       tags:['绘画','艺术','Discord'], category:'image',  icon:'lucide:palette' },
+  { name:'Stable Diffusion',desc:'开源图像生成模型，本地部署首选，LoRA/ControlNet 生态丰富',     url:'https://stability.ai',         tags:['绘画','开源','本地'],     category:'image',  icon:'lucide:mountain' },
+  { name:'DALL·E 3',        desc:'OpenAI 图像生成模型，文本理解精准，与 ChatGPT 深度集成',       url:'https://openai.com/dall-e-3',  tags:['绘画','OpenAI','GPT'],   category:'image',  icon:'simple-icons:openai' },
+  { name:'Flux',            desc:'新一代图像生成模型，画质与速度俱佳，开源社区活跃',               url:'https://blackforestlabs.ai',   tags:['绘画','开源','高质量'],   category:'image',  icon:'lucide:sparkles' },
+  { name:'Sora',            desc:'OpenAI 视频生成模型，可生成长达一分钟的高保真视频',              url:'https://openai.com/sora',      tags:['视频','OpenAI','生成'],   category:'video',  icon:'lucide:clapperboard' },
+  { name:'Runway',          desc:'专业 AI 视频创作平台，支持文本转视频、运动笔刷等高级功能',      url:'https://runwayml.com',         tags:['视频','创作','专业'],     category:'video',  icon:'lucide:film' },
+  { name:'Kling AI',        desc:'快手推出的视频生成模型，支持长视频生成与运动控制',               url:'https://klingai.com',          tags:['视频','国产','快手'],     category:'video',  icon:'lucide:clapperboard' },
+  { name:'Pika',            desc:'AI 视频生成工具，操作简单，支持图片/文本转视频',                url:'https://pika.art',             tags:['视频','简易','生成'],     category:'video',  icon:'lucide:video' },
+  { name:'Cursor',          desc:'AI 代码编辑器，基于 VS Code，支持智能补全与自然语言编程',       url:'https://cursor.sh',            tags:['编辑器','VS Code','AI'], category:'code',   icon:'lucide:cursor' },
+  { name:'GitHub Copilot',  desc:'微软旗下 AI 编程助手，IDE 插件生态成熟，企业级集成',            url:'https://github.com/features/copilot', tags:['编程','GitHub','微软'], category:'code', icon:'simple-icons:github' },
+  { name:'Replit',          desc:'在线 AI 编程平台，支持多语言，一键部署与分享',                   url:'https://replit.com',           tags:['在线','编程','部署'],     category:'code',   icon:'lucide:terminal' },
+  { name:'v0',              desc:'Vercel 推出的 AI UI 生成工具，用自然语言生成 React 组件',       url:'https://v0.dev',               tags:['前端','React','生成'],   category:'code',   icon:'simple-icons:vercel' },
+  { name:'Jasper',          desc:'AI 营销文案写作平台，支持品牌语调训练与多语言创作',              url:'https://jasper.ai',            tags:['文案','营销','品牌'],     category:'writing', icon:'lucide:pen-tool' },
+  { name:'Notion AI',       desc:'Notion 内置 AI 写作助手，智能总结、翻译、扩写一键完成',         url:'https://notion.so',            tags:['笔记','写作','效率'],     category:'writing', icon:'simple-icons:notion' },
+  { name:'Copy.ai',         desc:'AI 文案生成工具，快速创建营销邮件、社媒帖子、广告语',            url:'https://copy.ai',              tags:['文案','营销','自动'],     category:'writing', icon:'lucide:copy' },
+  { name:'Writesonic',      desc:'AI 写作平台，支持博客、广告、产品描述等多种内容创作',            url:'https://writesonic.com',       tags:['写作','博客','内容'],     category:'writing', icon:'lucide:file-edit' },
+  { name:'Suno',            desc:'AI 音乐创作平台，输入文字描述即可生成完整歌曲',                  url:'https://suno.com',             tags:['音乐','生成','创作'],     category:'music',  icon:'lucide:music' },
+  { name:'ElevenLabs',      desc:'顶尖 AI 语音合成与克隆平台，多语言自然语音输出',                url:'https://elevenlabs.io',        tags:['语音','克隆','TTS'],      category:'music',  icon:'lucide:mic' },
+  { name:'Udio',            desc:'AI 音乐生成工具，支持多种风格与歌词自定义创作',                  url:'https://udio.com',             tags:['音乐','创作','风格'],     category:'music',  icon:'lucide:headphones' },
+  { name:'Perplexity',      desc:'AI 搜索引擎，实时联网回答并附来源引用，研究利器',                url:'https://perplexity.ai',        tags:['搜索','研究','引用'],     category:'search', icon:'lucide:globe' },
+  { name:'Scispace',        desc:'AI 学术研究助手，论文阅读、理解、写作一站完成',                  url:'https://typeset.io',           tags:['学术','论文','研究'],     category:'search', icon:'lucide:graduation-cap' },
+  { name:'Consensus',       desc:'AI 学术搜索引擎，基于2亿论文给出循证回答',                      url:'https://consensus.app',        tags:['学术','论文','证据'],     category:'search', icon:'lucide:file-search' },
+  { name:'Gamma',           desc:'AI 演示文稿生成器，输入主题自动创建精美 PPT',                   url:'https://gamma.app',            tags:['PPT','演示','生成'],      category:'office', icon:'lucide:presentation' },
+  { name:'Otter.ai',        desc:'AI 会议记录与转写工具，实时生成会议纪要与行动项',                url:'https://otter.ai',             tags:['会议','转写','纪要'],     category:'office', icon:'lucide:file-text' },
+  { name:'Zapier',          desc:'自动化工作流平台，AI 增强连接 6000+ 应用无代码集成',            url:'https://zapier.com',           tags:['自动化','无代码','集成'], category:'office', icon:'lucide:zap' },
+  { name:'Raycast',         desc:'Mac 效率启动器，集成 AI 对话、翻译、代码片段等快捷操作',        url:'https://raycast.com',          tags:['Mac','效率','启动器'],   category:'office', icon:'lucide:command' },
+];
+
+// ============================================================
+
+
+const articles = [
+  {title:'ChatGPT Plus值得买吗？2026年最新定价与免费版功能全面对比',summary:'ChatGPT Plus每月20美元到底值不值？本文从GPT-4o访问量、消息限制、DALL·E绘画等8个维度对比免费版与Plus版。',category:'chat',date:'2026-06-13',url:'articles/chatgpt-plus-worth.html'},
+  {title:'DeepSeek R1本地部署教程：不同显存配置方案与实测性能数据',summary:'想在本地运行DeepSeek R1？本文基于社区实测数据，给出从6GB到48GB显存的详细配置方案。',category:'chat',date:'2026-06-12',url:'articles/deepseek-r1-local-deploy.html'},
+  {title:'Claude Pro订阅实测：$20/月到底多了哪些功能？与ChatGPT Plus全对比',summary:'Anthropic的Claude Pro同样$20/月。本文详解Pro版在模型访问、上下文长度等7个方面的升级。',category:'chat',date:'2026-05-24',url:'articles/claude-pro-review.html'},
+  {title:'Midjourney V6.1完整指南：参数详解与实战出图技巧',summary:'从基础参数到高级功能，系统梳理Midjourney V6.1的核心参数（--ar、--stylize、--chaos等）。',category:'image',date:'2026-06-11',url:'articles/midjourney-v6-guide.html'},
+  {title:'Flux模型全系列对比：Pro/Dev/Schnell/FP8怎么选',summary:'Black Forest Labs的Flux模型有Pro、Dev、Schnell、FP8四个版本，从画质、速度、价格、硬件要求四个维度实测对比。',category:'image',date:'2026-06-10',url:'articles/flux-models-compare.html'},
+  {title:'Stable Diffusion XL本地安装教程：6GB显卡从零部署全流程',summary:'想在自己电脑上跑AI绘画？本教程手把手教你安装SDXL，从Python环境到WebUI。',category:'image',date:'2026-05-27',url:'articles/sdxl-local-install.html'},
+  {title:'Sora使用教程：5步生成60秒1080P视频+定价全解析',summary:'OpenAI Sora于2024年12月正式向ChatGPT订阅用户开放。详解Sora的定价方案、使用步骤和提示词写法。',category:'video',date:'2026-06-09',url:'articles/sora-tutorial.html'},
+  {title:'Runway Gen-3 vs Kling AI全面对比：同一提示词6场景出片实测',summary:'Runway Gen-3 Alpha和Kling AI是2025年最强的两款AI视频工具。从画质、动作自然度、价格三个维度给出对比。',category:'video',date:'2026-06-08',url:'articles/runway-vs-kling.html'},
+  {title:'Pika AI视频生成器功能清单：从免费到$28/月，哪些功能值得付费',summary:'Pika是当前最易上手的AI视频工具之一。详解其免费/Basic/Pro三层方案的功能差异。',category:'video',date:'2026-05-25',url:'articles/pika-ai-video.html'},
+  {title:'Cursor vs GitHub Copilot深度对比：2026年AI编程助手选型指南',summary:'Cursor Pro（$20/月）和GitHub Copilot（$10/月）哪个更值？从补全准确率、Agent模式、价格等7个维度实测对比。',category:'code',date:'2026-06-07',url:'articles/cursor-vs-copilot.html'},
+  {title:'v0.dev入门教程：3步生成React+Tailwind组件+2026年定价详解',summary:'v0 by Vercel是当前最强的AI前端代码生成工具。详解其5档定价、使用技巧和实战案例。',category:'code',date:'2026-06-06',url:'articles/v0-dev-tutorial.html'},
+  {title:'Jasper AI价格与功能详解：Creator/Pro/Business 3档怎么选',summary:'Jasper AI在2025年提供Creator（$49/月）、Pro（$69/月）和Business（定制）三档方案。',category:'writing',date:'2026-06-05',url:'articles/jasper-ai-pricing.html'},
+  {title:'AI写作检测工具评测：GPTZero、Originality.ai、Turnitin准确率对比',summary:'2025年AI检测工具遍地开花。本文实测对比GPTZero、Originality.ai和Turnitin的准确率和价格。',category:'writing',date:'2026-06-04',url:'articles/ai-detection-tools.html'},
+  {title:'Suno AI音乐生成完整指南：2026年最新功能与定价详解',summary:'Suno是目前最强的AI音乐生成工具。详解Suno的定价方案、提示词写法和商用版权规则。',category:'music',date:'2026-06-03',url:'articles/suno-v4-tutorial.html'},
+  {title:'ElevenLabs语音克隆教程：3分钟录音复制你的声音+定价全解析',summary:'ElevenLabs是当前最逼真的AI语音克隆工具。详解从免费到$330/月的5档定价和使用限制。',category:'music',date:'2026-06-02',url:'articles/elevenlabs-voice-clone.html'},
+  {title:'Perplexity Pro深度评测：GPT-4o/Claude/Gemini三模型切换值得$20/月吗',summary:'Perplexity Pro每月$20，可切换GPT-4o、Claude 3.5 Sonnet、Gemini 2.5 Pro。详解功能差异和性价比。',category:'search',date:'2026-06-01',url:'articles/perplexity-pro-review.html'},
+  {title:'Consensus学术搜索实测：从5个研究问题看AI论文检索准确率',summary:'Consensus是一款专注学术文献的AI搜索引擎，只检索同行评审论文。用5个真实研究问题测试其准确性。',category:'search',date:'2026-05-31',url:'articles/consensus-academic-search.html'},
+  {title:'Gamma AI生成PPT教程：3步创建20页专业演示文稿',summary:'Gamma AI可以一句话生成完整PPT。详解从免费到Plus的定价方案和导出选项。',category:'office',date:'2026-05-30',url:'articles/gamma-ai-ppt.html'},
+  {title:'Otter.ai会议记录实测：1小时会议3分钟生成纪要+定价详解',summary:'Otter.ai是AI会议转录工具的行业标杆。详解从免费到Business的4档定价和跨平台使用。',category:'office',date:'2026-05-29',url:'articles/otter-ai-meeting.html'},
+  {title:'Notion AI写作实测：6种模板10篇文章质量评分',summary:'Notion AI作为笔记软件的内置AI到底好不好用？用6种场景实测其写作、翻译和数据库功能。',category:'office',date:'2026-05-28',url:'articles/notion-ai-review.html'}
+];
+
+const categories = [
+  { id:'all', label:'全部', icon:'lucide:grid-3x3' },
+  { id:'chat', label:'对话聊天', icon:'lucide:message-circle' },
+  { id:'image', label:'AI绘画', icon:'lucide:image' },
+  { id:'video', label:'AI视频', icon:'lucide:video' },
+  { id:'code', label:'AI编程', icon:'lucide:code-2' },
+  { id:'writing', label:'AI写作', icon:'lucide:pen-line' },
+  { id:'music', label:'AI音乐', icon:'lucide:music' },
+  { id:'search', label:'AI搜索', icon:'lucide:search' },
+  { id:'office', label:'办公效率', icon:'lucide:briefcase' },
+];
+
+let activeCategory = 'all';
+let searchQuery = '';
+
+document.getElementById('footerCount').textContent = tools.length;
+
+function renderTags() {
+  document.getElementById('tagsContainer').innerHTML = categories.map(cat => `
+    <button class="tag-btn shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg border text-xs font-medium ${cat.id === activeCategory ? 'active' : 'border-neutral-800/50 bg-dark-200/30 text-neutral-500 hover:text-neutral-300 hover:border-neutral-600'}" data-cat="${cat.id}">
+      <iconify-icon icon="${cat.icon}" width="13"></iconify-icon>
+      ${cat.label}
+    </button>`).join('');
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.cat;
+      renderTags();
+      renderTools();
+    });
+  });
+}
+
+function renderTools() {
+  let filtered = activeCategory === 'all' ? tools : tools.filter(t => t.category === activeCategory);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.tags.some(tag => tag.toLowerCase().includes(q)));
+  }
+  document.getElementById('toolCount').textContent = filtered.length + ' 个工具';
+  document.getElementById('toolsGrid').innerHTML = filtered.map(t => `
+    <div class="tool-card fade-in group rounded-xl border border-neutral-800/60 bg-dark-200/40 p-5">
+      <div class="flex items-start gap-3 mb-4">
+        <div class="card-icon w-10 h-10 rounded-lg bg-dark-300/50 border border-neutral-700/40 flex items-center justify-center text-accent-400 shrink-0 transition-colors">
+          <iconify-icon icon="${t.icon||'lucide:bot'}" width="18"></iconify-icon>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-[15px] font-semibold truncate">${t.name}</h3>
+          <p class="text-[13px] text-neutral-500 mt-0.5 line-clamp-2">${t.desc}</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          ${t.tags.slice(0,3).map(tag => `<span class="px-2 py-0.5 rounded text-[10px] bg-neutral-800/50 text-neutral-400">${tag}</span>`).join('')}
+        </div>
+        <a href="${t.url}" target="_blank" class="card-arrow flex items-center gap-1 text-[12px] font-medium text-accent-400">
+          直达 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+    </div>`).join('');
+}
+
+
+// ============================================================
+//  文章渲染
+// ============================================================
+function renderArticles() {
+  const container = document.getElementById('articlesGrid');
+  const filtered = articles;
+  container.innerHTML = filtered.map(a => `
+    <a href="${a.url}" class="article-card group rounded-xl border border-neutral-800/60 bg-dark-200/40 p-5 block">
+      <div class="flex items-start justify-between mb-3">
+        <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-accent-500/10 text-accent-400">${a.category==='chat'?'对话':a.category==='image'?'绘画':a.category==='code'?'编程':a.category==='video'?'视频':a.category==='office'?'办公':'通用'}</span>
+        <span class="text-[11px] text-neutral-600">${a.date}</span>
+      </div>
+      <h3 class="text-[15px] font-semibold mb-2 leading-snug text-neutral-200">${a.title}</h3>
+      <p class="text-[13px] text-neutral-500 leading-relaxed mb-4">${a.summary}</p>
+      <div class="flex items-center gap-1 text-[12px] font-medium text-accent-400">
+        阅读全文
+        <svg class="art-arrow w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </a>
+  `).join('');
+}
+
+
+renderTags();
+renderTools();
+renderArticles();
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderTools();
+});
+
+// 实际收录数
+document.getElementById('headerToolCount').textContent = tools.length;
+
+// 提交工具 (placeholder)
+function showSubmit() {
+  alert('提交工具功能即将上线！请先通过邮件联系我们。');
+}
+</script>
+</body>
+</html>
